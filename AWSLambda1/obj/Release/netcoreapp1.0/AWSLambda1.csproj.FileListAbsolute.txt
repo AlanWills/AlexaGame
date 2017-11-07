@@ -1,0 +1,8 @@
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\bin\Release\netcoreapp1.0\AWSLambda1.deps.json
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\bin\Release\netcoreapp1.0\AWSLambda1.dll
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\bin\Release\netcoreapp1.0\AWSLambda1.pdb
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\obj\Release\netcoreapp1.0\AWSLambda1.csproj.CoreCompileInputs.cache
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\obj\Release\netcoreapp1.0\AWSLambda1.AssemblyInfoInputs.cache
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\obj\Release\netcoreapp1.0\AWSLambda1.AssemblyInfo.cs
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\obj\Release\netcoreapp1.0\AWSLambda1.dll
+c:\users\alawi\documents\visual studio 2017\Projects\AWSLambda1\AWSLambda1\obj\Release\netcoreapp1.0\AWSLambda1.pdb
