@@ -37,16 +37,16 @@ namespace AWSLambda1
                 (input.Request as IntentRequest).Intent != null)
             {
                 IntentRequest request = input.Request as IntentRequest;
-                context.Logger.LogLine("Request Intent:" + request.Intent.Name);
+                context.Logger.LogLine("Request Intent: " + request.Intent.Name);
 
                 switch ((input.Request as IntentRequest).Intent.Name)
                 {
                     case "AnswerIntent":
                     {
-                        string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "answer";
+                        string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "";
 
                         context.Logger.LogLine("Answer " + answer);
-                        return ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, answer == "a" ? YesResponse : NoResponse, "");
+                        return ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, answer == "a" ? YesResponse : NoResponse, "answer");
                     }
                     case "LaunchIntent":
                     {
@@ -68,6 +68,12 @@ namespace AWSLambda1
                 context.Logger.LogLine("Playing question");
                 SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "question");
                 return response;
+            }
+            else if (input.Request is AudioPlayerRequest)
+            {
+                AudioPlayerRequest request = input.Request as AudioPlayerRequest;
+                context.Logger.LogLine("Audio Request Type: " + request.AudioRequestType.ToString());
+                context.Logger.LogLine("Audio Request Token: " + request.EnqueuedToken?.ToString());
             }
 
             return ResponseBuilder.Empty();
