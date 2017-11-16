@@ -29,20 +29,21 @@ namespace AWSLambda1
         /// <returns></returns>
         public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
         {
-            context.Logger.LogLine((input.GetRequestType().Name));
-            context.Logger.LogLine((input.Request.GetType().Name));
+            // Tokens cannot be the same otherwise things will not work
+
+            context.Logger.LogLine("Request Type: " + input.GetRequestType().Name);
 
             if (input.Request is IntentRequest && 
                 (input.Request as IntentRequest).Intent != null)
             {
                 IntentRequest request = input.Request as IntentRequest;
-                context.Logger.LogLine(request.Intent.Name);
+                context.Logger.LogLine("Request Intent:" + request.Intent.Name);
 
                 switch ((input.Request as IntentRequest).Intent.Name)
                 {
                     case "AnswerIntent":
                     {
-                        string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "";
+                        string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "answer";
 
                         context.Logger.LogLine("Answer " + answer);
                         return ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, answer == "a" ? YesResponse : NoResponse, "");
@@ -50,7 +51,7 @@ namespace AWSLambda1
                     case "LaunchIntent":
                     {
                         context.Logger.LogLine("Playing question");
-                        SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "");
+                        SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "question1");
                         return response;
                     }
                     case BuiltInIntent.Cancel:
@@ -65,7 +66,7 @@ namespace AWSLambda1
             else if (input.Request is LaunchRequest)
             {
                 context.Logger.LogLine("Playing question");
-                SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "");
+                SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "question");
                 return response;
             }
 
