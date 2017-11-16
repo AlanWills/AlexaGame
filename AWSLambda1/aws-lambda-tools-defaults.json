@@ -7,7 +7,7 @@
         "All the command line options for the Lambda command can be specified in this file."
     ],
     "profile"     : "default",
-    "region"      : "us-east-1",
+    "region"      : "eu-west-1",
     "configuration" : "Release",
     "framework"     : "netcoreapp1.0",
     "function-runtime" : "dotnetcore1.0",
@@ -15,6 +15,6 @@
     "function-timeout"     : 10,
     "function-handler"     : "AWSLambda1::AWSLambda1.Function::FunctionHandler",
     "function-name"        : "TestFunction",
-    "function-role"        : "arn:aws:iam::075146145646:role/lambda_exec_TestFunction",
+    "function-role"        : "arn:aws:iam::075146145646:role/lambda_exec_TestFunction-1",
     "environment-variables" : ""
 }
