@@ -10,6 +10,8 @@ using Alexa.NET;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Ssml;
+using System.Xml.Linq;
+using System.IO;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -86,16 +88,22 @@ namespace AWSLambda1
 
         private SkillResponse PlayIntroduction(ILambdaLogger logger)
         {
+            XDocument document = XDocument.Load(File.OpenText("AudioData.xml"));
+            XElement element = document.Element("AudioFiles").Element("Introduction");
+
             // build the speech response 
             Speech speech = new Speech();
             speech.Elements.Add(new Sentence("Launching Word Play"));
             speech.Elements.Add(new Break() { Time = "2s" });
-            speech.Elements.Add(new Audio(Introduction));
+            speech.Elements.Add(new Audio(element.Attribute("source").Value));
 
             logger.LogLine(speech.ToXml());
 
             // create the response using the ResponseBuilder
-            return ResponseBuilder.Tell(speech);
+            SkillResponse response = ResponseBuilder.Tell(speech);
+            response.Response.ShouldEndSession = false;
+
+            return response;
         }
     }
 }
