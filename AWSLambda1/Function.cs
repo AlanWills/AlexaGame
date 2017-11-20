@@ -75,6 +75,11 @@ namespace AWSLambda1
                 context.Logger.LogLine("Audio Request Type: " + request.AudioRequestType.ToString());
                 context.Logger.LogLine("Audio Request Token: " + request.EnqueuedToken?.ToString());
             }
+            else if (input.Request is SessionEndedRequest)
+            {
+                context.Logger.LogLine("Session ended");
+                return ResponseBuilder.AudioPlayerClearQueue(ClearBehavior.ClearAll);
+            }
 
             return ResponseBuilder.Empty();
         }
