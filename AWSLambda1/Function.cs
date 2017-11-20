@@ -9,6 +9,7 @@ using Alexa.NET.Request;
 using Alexa.NET;
 using Alexa.NET.Request.Type;
 using Alexa.NET.Response.Directive;
+using Alexa.NET.Response.Ssml;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -20,6 +21,7 @@ namespace AWSLambda1
         private const string Question = "https://s3-eu-west-1.amazonaws.com/flowerquestion/FLOWER+Q.mp3";
         private const string YesResponse = "https://s3-eu-west-1.amazonaws.com/flowerquestion/WELL_DONE_FLOWER.mp3";
         private const string NoResponse = "https://s3-eu-west-1.amazonaws.com/flowerquestion/NOPE+WRONG+FLOWER.mp3";
+        private const string Introduction = "https://s3-eu-west-1.amazonaws.com/flowerquestion/GAME+INTRO+SHORT.mp3";
 
         /// <summary>
         /// A simple function that takes a string and does a ToUpper
@@ -30,7 +32,6 @@ namespace AWSLambda1
         public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
         {
             // Tokens cannot be the same otherwise things will not work
-
             context.Logger.LogLine("Request Type: " + input.GetRequestType().Name);
 
             if (input.Request is IntentRequest && 
@@ -46,12 +47,12 @@ namespace AWSLambda1
                         string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "";
 
                         context.Logger.LogLine("Answer " + answer);
-                        return ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, answer == "a" ? YesResponse : NoResponse, "answer");
+                        return ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, answer == "a" ? YesResponse : NoResponse, DateTime.Now.ToString("yyyyMMddHHmmss"));
                     }
                     case "LaunchIntent":
                     {
                         context.Logger.LogLine("Playing question");
-                        SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "question1");
+                        SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, DateTime.Now.ToString("yyyyMMddHHmmss"));
                         return response;
                     }
                     case BuiltInIntent.Cancel:
@@ -65,9 +66,8 @@ namespace AWSLambda1
             }
             else if (input.Request is LaunchRequest)
             {
-                context.Logger.LogLine("Playing question");
-                SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, "question");
-                return response;
+                context.Logger.LogLine("Playing intro");
+                return PlayIntroduction(context.Logger);
             }
             else if (input.Request is AudioPlayerRequest)
             {
@@ -82,6 +82,20 @@ namespace AWSLambda1
             }
 
             return ResponseBuilder.Empty();
+        }
+
+        private SkillResponse PlayIntroduction(ILambdaLogger logger)
+        {
+            // build the speech response 
+            Speech speech = new Speech();
+            speech.Elements.Add(new Sentence("Launching Word Play"));
+            speech.Elements.Add(new Break() { Time = "2s" });
+            speech.Elements.Add(new Audio(Introduction));
+
+            logger.LogLine(speech.ToXml());
+
+            // create the response using the ResponseBuilder
+            return ResponseBuilder.Tell(speech);
         }
     }
 }
