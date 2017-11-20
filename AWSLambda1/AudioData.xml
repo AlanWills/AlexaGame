@@ -1,4 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AudioFiles>
-  <Introduction source="https://s3-eu-west-1.amazonaws.com/flowerquestion/GAME+INTRO+SHORT.mp3"/>
+  <Introduction source="https://s3-eu-west-1.amazonaws.com/flowerquestion/GameIntroShort.mp3"/>
+  <FlowerQuestion source="https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerQuestion.mp3">
+    <AnswerRight source="https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerAnswerRight.mp3"/>
+    <AnswerWrong source="https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerAnswerWrong.mp3"/>
+  </FlowerQuestion>
 </AudioFiles>

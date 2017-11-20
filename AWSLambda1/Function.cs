@@ -20,10 +20,11 @@ namespace AWSLambda1
 {
     public class Function
     {
-        private const string Question = "https://s3-eu-west-1.amazonaws.com/flowerquestion/FLOWER+Q.mp3";
-        private const string YesResponse = "https://s3-eu-west-1.amazonaws.com/flowerquestion/WELL_DONE_FLOWER.mp3";
-        private const string NoResponse = "https://s3-eu-west-1.amazonaws.com/flowerquestion/NOPE+WRONG+FLOWER.mp3";
-        private const string Introduction = "https://s3-eu-west-1.amazonaws.com/flowerquestion/GAME+INTRO+SHORT.mp3";
+        // IMAGINE THIS:
+        // WE BUILD AN AUDIO ENGINE THAT CAN CONVERT XML INTO A GAME
+        // WE CAN THEN OBTAIN A SCRIPT FROM A SERVER
+        // AND THEN PLAY THE CONVERTER XML GAME
+        // CAN CREATE WRAPPER SOFTWARE TO HELP THE GIRLS TO WRITE STUFF
 
         /// <summary>
         /// A simple function that takes a string and does a ToUpper
@@ -47,22 +48,18 @@ namespace AWSLambda1
                     case "AnswerIntent":
                     {
                         string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "";
-
                         context.Logger.LogLine("Answer " + answer);
-                        return ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, answer == "a" ? YesResponse : NoResponse, DateTime.Now.ToString("yyyyMMddHHmmss"));
+
+                        Speech speech = new Speech();
+                        speech.Elements.Add(new Audio(answer == "a" ? GetAnswerRightUrl("FlowerQuestion") : GetAnswerWrongUrl("FlowerQuestion")));
+
+                        context.Logger.LogLine(speech.ToXml());
+                        return ResponseBuilder.Tell(speech);
                     }
-                    case "LaunchIntent":
+
+                    default:
                     {
-                        context.Logger.LogLine("Playing question");
-                        SkillResponse response = ResponseBuilder.AudioPlayerPlay(PlayBehavior.ReplaceAll, Question, DateTime.Now.ToString("yyyyMMddHHmmss"));
-                        return response;
-                    }
-                    case BuiltInIntent.Cancel:
-                    case BuiltInIntent.Stop:
-                    case BuiltInIntent.Pause:
-                    {
-                        context.Logger.LogLine("Stopping audio");
-                        return ResponseBuilder.AudioPlayerClearQueue(ClearBehavior.ClearAll);
+                        return ResponseBuilder.Empty();
                     }
                 }
             }
@@ -71,16 +68,10 @@ namespace AWSLambda1
                 context.Logger.LogLine("Playing intro");
                 return PlayIntroduction(context.Logger);
             }
-            else if (input.Request is AudioPlayerRequest)
-            {
-                AudioPlayerRequest request = input.Request as AudioPlayerRequest;
-                context.Logger.LogLine("Audio Request Type: " + request.AudioRequestType.ToString());
-                context.Logger.LogLine("Audio Request Token: " + request.EnqueuedToken?.ToString());
-            }
+            
             else if (input.Request is SessionEndedRequest)
             {
                 context.Logger.LogLine("Session ended");
-                return ResponseBuilder.AudioPlayerClearQueue(ClearBehavior.ClearAll);
             }
 
             return ResponseBuilder.Empty();
@@ -88,14 +79,11 @@ namespace AWSLambda1
 
         private SkillResponse PlayIntroduction(ILambdaLogger logger)
         {
-            XDocument document = XDocument.Load(File.OpenText("AudioData.xml"));
-            XElement element = document.Element("AudioFiles").Element("Introduction");
-
             // build the speech response 
             Speech speech = new Speech();
             speech.Elements.Add(new Sentence("Launching Word Play"));
-            speech.Elements.Add(new Break() { Time = "2s" });
-            speech.Elements.Add(new Audio(element.Attribute("source").Value));
+            speech.Elements.Add(new Audio(GetUrl("Introduction")));
+            speech.Elements.Add(new Audio(GetUrl("FlowerQuestion")));
 
             logger.LogLine(speech.ToXml());
 
@@ -104,6 +92,27 @@ namespace AWSLambda1
             response.Response.ShouldEndSession = false;
 
             return response;
+        }
+
+        private XElement GetAudioFilesElement(string elementName)
+        {
+            XDocument document = XDocument.Load(File.OpenText("AudioData.xml"));
+            return document.Element("AudioFiles").Element(elementName);
+        }
+
+        private string GetUrl(string elementName)
+        {
+            return GetAudioFilesElement(elementName).Attribute("source").Value;
+        }
+
+        private string GetAnswerWrongUrl(string questionElementName)
+        {
+            return GetAudioFilesElement(questionElementName).Element("AnswerWrong").Attribute("source").Value;
+        }
+
+        private string GetAnswerRightUrl(string questionElementName)
+        {
+            return GetAudioFilesElement(questionElementName).Element("AnswerRight").Attribute("source").Value;
         }
     }
 }
