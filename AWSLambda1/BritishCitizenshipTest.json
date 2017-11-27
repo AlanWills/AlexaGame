@@ -1,0 +1,12 @@
+﻿{
+  "Name": "British Citizenship Test",
+  "IntroductionAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/GameIntroShort.mp3",
+  "Questions": [
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerQuestion.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerAnswerRight.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerAnswerWrong.mp3"
+    }
+  ]
+}

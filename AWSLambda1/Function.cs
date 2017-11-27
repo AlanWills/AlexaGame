@@ -12,6 +12,9 @@ using Alexa.NET.Response.Directive;
 using Alexa.NET.Response.Ssml;
 using System.Xml.Linq;
 using System.IO;
+using Newtonsoft.Json;
+using System.Net;
+using System.Text;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -20,20 +23,16 @@ namespace AWSLambda1
 {
     public class Function
     {
-        // IMAGINE THIS:
-        // WE BUILD AN AUDIO ENGINE THAT CAN CONVERT XML INTO A GAME
-        // WE CAN THEN OBTAIN A SCRIPT FROM A SERVER
-        // AND THEN PLAY THE CONVERTER XML GAME
-        // CAN CREATE WRAPPER SOFTWARE TO HELP THE GIRLS TO WRITE STUFF
-
         /// <summary>
-        /// A simple function that takes a string and does a ToUpper
+        /// Download all of our games and process them for use.
         /// </summary>
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public SkillResponse FunctionHandler(SkillRequest input, ILambdaContext context)
+        public async Task<SkillResponse> FunctionHandler(SkillRequest input, ILambdaContext context)
         {
+            List<RegisteredGameInfo> gameInfoList = await GetRegisteredGames(context.Logger);
+
             // Tokens cannot be the same otherwise things will not work
             context.Logger.LogLine("Request Type: " + input.GetRequestType().Name);
 
@@ -45,16 +44,22 @@ namespace AWSLambda1
 
                 switch ((input.Request as IntentRequest).Intent.Name)
                 {
+                    case "PlayGameIntent":
+                    {
+                        string requestedGame = request.Intent.Slots.ContainsKey("game") ? request.Intent.Slots["game"].Value.ToLower() : "";
+                        context.Logger.LogLine("Request Game " + requestedGame);
+
+                        Game game = await gameInfoList.Find(x => x.Name.ToLower() == requestedGame).LoadGame(context.Logger);
+                        return game.StartGame(context.Logger);
+                    }
+
                     case "AnswerIntent":
                     {
                         string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "";
                         context.Logger.LogLine("Answer " + answer);
 
-                        Speech speech = new Speech();
-                        speech.Elements.Add(new Audio(answer == "a" ? GetAnswerRightUrl("FlowerQuestion") : GetAnswerWrongUrl("FlowerQuestion")));
-
-                        context.Logger.LogLine(speech.ToXml());
-                        return ResponseBuilder.Tell(speech);
+                        Game game = await gameInfoList[0].LoadGame(context.Logger);
+                        return game.AnswerQuestion(0, answer, context.Logger);
                     }
 
                     default:
@@ -66,7 +71,7 @@ namespace AWSLambda1
             else if (input.Request is LaunchRequest)
             {
                 context.Logger.LogLine("Playing intro");
-                return PlayIntroduction(context.Logger);
+                return SayRegisteredGames(gameInfoList);
             }
             
             else if (input.Request is SessionEndedRequest)
@@ -77,42 +82,53 @@ namespace AWSLambda1
             return ResponseBuilder.Empty();
         }
 
-        private SkillResponse PlayIntroduction(ILambdaLogger logger)
+        private async Task<List<RegisteredGameInfo>> GetRegisteredGames(ILambdaLogger logger)
+        {
+            List<RegisteredGameInfo> gameInfoList = new List<RegisteredGameInfo>();
+
+            // https://s3-eu-west-1.amazonaws.com/word-play-games/RegisteredGames.json
+            HttpWebRequest downloadFilesRequest = (HttpWebRequest)WebRequest.Create("https://s3-eu-west-1.amazonaws.com/word-play-games/RegisteredGames.json");
+
+            // Execute the request
+            using (HttpWebResponse response = (HttpWebResponse)(await downloadFilesRequest.GetResponseAsync()))
+            {
+                // we will read data via the response stream
+                using (Stream resStream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(resStream))
+                    {
+                        string bufAsString = reader.ReadToEnd();
+                        gameInfoList = JsonConvert.DeserializeObject<List<RegisteredGameInfo>>(bufAsString);
+
+                        logger.LogLine("Discovered games:");
+                        foreach (RegisteredGameInfo gameInfo in gameInfoList)
+                        {
+                            logger.LogLine(gameInfo.Name);
+                        }
+                    }
+                }
+            }
+
+            return gameInfoList;
+        }
+
+        private SkillResponse SayRegisteredGames(List<RegisteredGameInfo> gameInfoList)
         {
             // build the speech response 
             Speech speech = new Speech();
-            speech.Elements.Add(new Sentence("Launching Word Play"));
-            speech.Elements.Add(new Audio(GetUrl("Introduction")));
-            speech.Elements.Add(new Audio(GetUrl("FlowerQuestion")));
+            speech.Elements.Add(new Sentence("Welcome to Word Play."));
+            speech.Elements.Add(new Sentence("The available games to play are: "));
 
-            logger.LogLine(speech.ToXml());
+            foreach (RegisteredGameInfo info in gameInfoList)
+            {
+                speech.Elements.Add(new Sentence(info.Name));
+            }
 
             // create the response using the ResponseBuilder
             SkillResponse response = ResponseBuilder.Tell(speech);
             response.Response.ShouldEndSession = false;
 
             return response;
-        }
-
-        private XElement GetAudioFilesElement(string elementName)
-        {
-            XDocument document = XDocument.Load(File.OpenText("AudioData.xml"));
-            return document.Element("AudioFiles").Element(elementName);
-        }
-
-        private string GetUrl(string elementName)
-        {
-            return GetAudioFilesElement(elementName).Attribute("source").Value;
-        }
-
-        private string GetAnswerWrongUrl(string questionElementName)
-        {
-            return GetAudioFilesElement(questionElementName).Element("AnswerWrong").Attribute("source").Value;
-        }
-
-        private string GetAnswerRightUrl(string questionElementName)
-        {
-            return GetAudioFilesElement(questionElementName).Element("AnswerRight").Attribute("source").Value;
         }
     }
 }
