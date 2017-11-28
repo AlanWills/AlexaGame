@@ -51,13 +51,14 @@ namespace AWSLambda1
             return response;
         }
 
-        public SkillResponse AnswerQuestion(int index, string answer, ILambdaLogger logger)
+        public Tuple<bool, SkillResponse> AnswerQuestion(int index, string answer, ILambdaLogger logger)
         {
             Question question = Questions[index];
+            bool correct = answer == question.CorrectAnswer;
 
             // build the speech response 
             Speech speech = new Speech();
-            speech.Elements.Add(new Audio(answer == question.CorrectAnswer ? question.CorrectAnswerAudioURL : question.IncorrectAnswerAudioURL));
+            speech.Elements.Add(new Audio(correct ? question.CorrectAnswerAudioURL : question.IncorrectAnswerAudioURL));
 
             logger.LogLine(speech.ToXml());
 
@@ -65,7 +66,7 @@ namespace AWSLambda1
             SkillResponse response = ResponseBuilder.Tell(speech);
             response.Response.ShouldEndSession = false;
 
-            return response;
+            return new Tuple<bool, SkillResponse>(correct, response);
         }
     }
 }

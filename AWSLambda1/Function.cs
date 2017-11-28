@@ -50,7 +50,13 @@ namespace AWSLambda1
                         context.Logger.LogLine("Request Game " + requestedGame);
 
                         Game game = await gameInfoList.Find(x => x.Name.ToLower() == requestedGame).LoadGame(context.Logger);
-                        return game.StartGame(context.Logger);
+                        SkillResponse response = game.StartGame(context.Logger);
+                        response.SessionAttributes = response.SessionAttributes ?? new Dictionary<string, object>();
+                        response.SessionAttributes.Add("GameName", requestedGame);
+                        response.SessionAttributes.Add("CurrentQuestion", (long)0);
+                        response.SessionAttributes.Add("Score", (long)0);
+
+                        return response;
                     }
 
                     case "AnswerIntent":
@@ -58,8 +64,28 @@ namespace AWSLambda1
                         string answer = request.Intent.Slots.ContainsKey("answer") ? request.Intent.Slots["answer"].Value.ToLower() : "";
                         context.Logger.LogLine("Answer " + answer);
 
-                        Game game = await gameInfoList[0].LoadGame(context.Logger);
-                        return game.AnswerQuestion(0, answer, context.Logger);
+                        string gameName = input.Session.Attributes["GameName"] as string;
+
+                        Game game = await gameInfoList.Find(x => x.Name.ToLower() == gameName).LoadGame(context.Logger);
+                        Tuple<bool, SkillResponse> correctAnswer = game.AnswerQuestion(0, answer, context.Logger);
+
+                        // Make this building up of session attributes much safer - add attributes if not present
+                        // This currently relies on the previous response doing it correctly
+                        correctAnswer.Item2.SessionAttributes = input.Session.Attributes;
+                        long q = (long)input.Session.Attributes["CurrentQuestion"];
+                        correctAnswer.Item2.SessionAttributes["CurrentQuestion"] = ++q;
+
+                        context.Logger.LogLine("Current Question " + q);
+
+                        if (correctAnswer.Item1)
+                        {
+                            long score = (long)input.Session.Attributes["Score"];
+                            correctAnswer.Item2.SessionAttributes["Score"] = ++score;
+
+                            context.Logger.LogLine("Current Score " + score);
+                        }
+
+                        return correctAnswer.Item2;
                     }
 
                     default:
