@@ -23,6 +23,8 @@ namespace AWSLambda1
 {
     public class Function
     {
+        // Move the game name, current question and score to a static object for ease of use
+
         /// <summary>
         /// Download all of our games and process them for use.
         /// </summary>
