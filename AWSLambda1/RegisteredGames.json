@@ -2,5 +2,9 @@
   {
     "Name": "British Citizenship Test",
     "GameFileURL": "https://s3-eu-west-1.amazonaws.com/word-play-games/BritishCitizenshipTest.json"
+  },
+  {
+    "Name": "News Quiz",
+    "GameFileURL": "https://s3-eu-west-1.amazonaws.com/word-play-games/NewsQuiz.json"
   }
 ]

@@ -32,6 +32,24 @@ namespace AWSLambda1
         [JsonProperty]
         public List<Question> Questions { get; set; }
 
+        /// <summary>
+        /// How many questions do we need to get right to pass.
+        /// </summary>
+        [JsonProperty]
+        public int PassScore { get; set; }
+
+        /// <summary>
+        /// The URL to the audio file for if you passed the game.
+        /// </summary>
+        [JsonProperty]
+        public string PassAudioURL { get; set; }
+
+        /// <summary>
+        /// The URL to the audio file for if you failed the game.
+        /// </summary>
+        [JsonProperty]
+        public string FailAudioURL { get; set; }
+
         #endregion
 
         public SkillResponse StartGame(ILambdaLogger logger)
@@ -51,7 +69,7 @@ namespace AWSLambda1
             return response;
         }
 
-        public Tuple<bool, SkillResponse> AnswerQuestion(int index, string answer, ILambdaLogger logger)
+        public Tuple<bool, SkillResponse> AnswerQuestion(int index, string answer, int currentScore)
         {
             Question question = Questions[index];
             bool correct = answer == question.CorrectAnswer;
@@ -60,8 +78,22 @@ namespace AWSLambda1
             Speech speech = new Speech();
             speech.Elements.Add(new Audio(correct ? question.CorrectAnswerAudioURL : question.IncorrectAnswerAudioURL));
 
-            logger.LogLine(speech.ToXml());
-
+            if (index == Questions.Count - 1)
+            {
+                if (!string.IsNullOrEmpty(PassAudioURL) && !string.IsNullOrEmpty(FailAudioURL))
+                {
+                    speech.Elements.Add(new Audio(currentScore >= PassScore ? PassAudioURL : FailAudioURL));
+                }
+                else
+                {
+                    speech.Elements.Add(new Sentence("Your final score was: " + (correct ? (currentScore + 1) : currentScore) + " out of " + Questions.Count));
+                }
+            }
+            else
+            {
+                speech.Elements.Add(new Audio(Questions[index + 1].QuestionAudioURL));
+            }
+            
             // create the response using the ResponseBuilder
             SkillResponse response = ResponseBuilder.Tell(speech);
             response.Response.ShouldEndSession = false;

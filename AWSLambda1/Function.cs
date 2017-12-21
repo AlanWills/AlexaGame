@@ -67,23 +67,22 @@ namespace AWSLambda1
                         context.Logger.LogLine("Answer " + answer);
 
                         string gameName = input.Session.Attributes["GameName"] as string;
+                        long q = (long)input.Session.Attributes["CurrentQuestion"];
+                        long score = (long)input.Session.Attributes["Score"];
 
                         Game game = await gameInfoList.Find(x => x.Name.ToLower() == gameName).LoadGame(context.Logger);
-                        Tuple<bool, SkillResponse> correctAnswer = game.AnswerQuestion(0, answer, context.Logger);
+                        Tuple<bool, SkillResponse> correctAnswer = game.AnswerQuestion((int)q, answer, (int)score);
 
                         // Make this building up of session attributes much safer - add attributes if not present
                         // This currently relies on the previous response doing it correctly
                         correctAnswer.Item2.SessionAttributes = input.Session.Attributes;
-                        long q = (long)input.Session.Attributes["CurrentQuestion"];
                         correctAnswer.Item2.SessionAttributes["CurrentQuestion"] = ++q;
 
                         context.Logger.LogLine("Current Question " + q);
 
                         if (correctAnswer.Item1)
                         {
-                            long score = (long)input.Session.Attributes["Score"];
                             correctAnswer.Item2.SessionAttributes["Score"] = ++score;
-
                             context.Logger.LogLine("Current Score " + score);
                         }
 
@@ -127,12 +126,6 @@ namespace AWSLambda1
                     {
                         string bufAsString = reader.ReadToEnd();
                         gameInfoList = JsonConvert.DeserializeObject<List<RegisteredGameInfo>>(bufAsString);
-
-                        logger.LogLine("Discovered games:");
-                        foreach (RegisteredGameInfo gameInfo in gameInfoList)
-                        {
-                            logger.LogLine(gameInfo.Name);
-                        }
                     }
                 }
             }

@@ -1,12 +1,69 @@
 ﻿{
   "Name": "British Citizenship Test",
+  "PassScore": 7,
   "IntroductionAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/GameIntroShort.mp3",
+  "PassAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Pass.mp3",
+  "FailAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Fail.mp3",
   "Questions": [
     {
-      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerQuestion.mp3",
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q1.mp3",
+      "CorrectAnswer": "c",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q1Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q1Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q2.mp3",
       "CorrectAnswer": "a",
-      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerAnswerRight.mp3",
-      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/flowerquestion/FlowerAnswerWrong.mp3"
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q2Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q2Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q3.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q3Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q3Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q4.mp3",
+      "CorrectAnswer": "c",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q4Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q4Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q5.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q5Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q5Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q6.mp3",
+      "CorrectAnswer": "d",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q6Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q6Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q7.mp3",
+      "CorrectAnswer": "b",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q7Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q7Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q8.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q8Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q8Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q9.mp3",
+      "CorrectAnswer": "b",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q9Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q9Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q10.mp3",
+      "CorrectAnswer": "c",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q10Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/british-citizenship-test/Q10Incorrect.mp3"
     }
   ]
 }

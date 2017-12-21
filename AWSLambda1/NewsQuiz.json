@@ -1,0 +1,48 @@
+﻿{
+  "Name": "News Quiz",
+  "IntroductionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Intro.mp3",
+  "Questions": [
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q1.mp3",
+      "CorrectAnswer": "c",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q1Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q1Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q2.mp3",
+      "CorrectAnswer": "c",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q2Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q2Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q3.mp3",
+      "CorrectAnswer": "b",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q3Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q3Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q4.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q4Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q4Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q5.mp3",
+      "CorrectAnswer": "c",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q5Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q5Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q6.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q6Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q6Incorrect.mp3"
+    },
+    {
+      "QuestionAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q7.mp3",
+      "CorrectAnswer": "a",
+      "CorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q7Correct.mp3",
+      "IncorrectAnswerAudioURL": "https://s3-eu-west-1.amazonaws.com/news-quiz/Q7Incorrect.mp3"
+    }
+  ]
+}
